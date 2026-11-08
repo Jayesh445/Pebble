@@ -1,0 +1,11 @@
+# Future architecture
+
+The ESP32 is the real-time body controller; it handles joint motion, limits and a communication watchdog. A laptop or small companion computer can later receive images and observations and send bounded high-level intents such as `stand`, `stop` or a short step. No LLM directly sets PWM or overrides safety logic. A network stop and lost-connection behavior must be implemented before remote control. No camera, networking, gait or AI provider is currently implemented.
+
+A future AI provider interface can accept an observation and return an intent using the same schema, implemented by a local rule-based provider first and optional OpenAI or Claude adapters later. Keep credentials on the computer, not committed or stored in ESP32 firmware. The camera can connect to a compatible controller or be a separate ESP32-CAM; streams and API costs depend on design and user choices. The ESP32 is not expected to train or run a large language model.
+
+## Training, memory and versions
+
+AI conversation memory, simulation training and model weights are different things. Store small experiment configuration, code, hashes and metadata in Git. Store large training datasets, recordings and model checkpoints in a separate local directory or object storage with backups and access controls; reference immutable versions and checksums in an experiment manifest. Do not commit API keys, private images, recordings or large binaries. Include consent and retention choices for camera data. Learning is not automatic: reinforcement-learning policies are trained in simulation on a computer, evaluated, versioned and deployed to an appropriate inference device; a new language-model provider does not automatically inherit its model weights. A provider-neutral memory store can be made accessible to whichever provider is selected later, but its format and permissions need designing.
+
+An open-source design worth studying is Stanford Pupper (MIT): https://github.com/stanfordroboticsclub/StanfordQuadruped . Its gait concepts are useful, but it uses a different robot and cannot be copied directly to this eight-servo mechanism. This repository does not currently copy third-party code. If code is reused, preserve its license and attribution, verify its compatibility and adapt/test it to actual geometry.
